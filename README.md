@@ -21,7 +21,7 @@
 - Create venv: `python -m venv venv`
 - Activate it: `python -m venv venv`
 - Install requirements: `pip install -r requirements.txt`
-- Fulfill `.env.sample`
+- Create `.env` file using `.env.sample` as skeleton
 - Run migrations: `python manage.py migrate`
 - Run Redis Server: `redis-server`
 - Run celery for tasks handling: `celery -A rick_and_morty worker -l INFO`
