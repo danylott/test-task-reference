@@ -27,4 +27,5 @@
 - Run celery for tasks handling: `celery -A rick_and_morty worker -l INFO`
 - Run celery beat for task scheduling: `celery -A rick_and_morty beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler`
 - Create schedule for running sync in DB
+- Run flower for monitoring tasks: `celery -A rick_and_morty flower`
 - Run app: `python manage.py runserver`
