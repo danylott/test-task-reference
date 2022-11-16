@@ -12,6 +12,6 @@
 
 ### Technologies to use:
 1. Public API: https://rickandmortyapi.com/documentation.
-2. Any task scheduler for data synchronization for Rick & Morty API.
+2. Use Celery as task scheduler for data synchronization for Rick & Morty API.
 3. Python, Django/Flask/FastAPI, ORM, PostgreSQL, Git.
 4. All endpoints should be documented via Swagger.
