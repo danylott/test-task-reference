@@ -8,6 +8,21 @@ from httpx import AsyncClient
 from characters.models import Character
 
 
+GRAPHQL_QUERY = """
+query {
+  characters(page: {page}) {
+    results{
+      api_id: id
+      name
+      status
+      gender
+      image
+    }
+  }
+}
+"""
+
+
 def parse_characters_response(characters_response: dict) -> list[Character]:
     return [
         Character(
@@ -25,7 +40,9 @@ async def scrape_single_page(
     client: AsyncClient, url_to_scrape: str, page: int
 ) -> list[Character]:
     characters_response = (
-        await client.get(url_to_scrape, params={"page": page})
+        await client.post(
+            url_to_scrape, data={"query": GRAPHQL_QUERY.format(page=page)}
+        )
     ).json()
     return parse_characters_response(characters_response)
 
