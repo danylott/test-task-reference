@@ -1,12 +1,9 @@
-import random
-import time
-
+import asyncio
 from celery import shared_task
-from celery.schedules import crontab
 
 from characters.scraper import sync_characters_with_api
 
 
 @shared_task()
 def run_sync_characters_with_api() -> None:
-    sync_characters_with_api()
+    asyncio.run(sync_characters_with_api())
