@@ -10,7 +10,10 @@ from characters.models import Character
 
 GRAPHQL_QUERY = """
 query {
-  characters(page: {page}) {
+  characters(page: %s) {
+    info{
+      pages
+    }
     results{
       api_id: id
       name
@@ -25,14 +28,8 @@ query {
 
 def parse_characters_response(characters_response: dict) -> list[Character]:
     return [
-        Character(
-            api_id=character_dict["id"],
-            name=character_dict["name"],
-            status=character_dict["status"],
-            gender=character_dict["gender"],
-            image=character_dict["image"],
-        )
-        for character_dict in characters_response["results"]
+        Character(**character_dict)
+        for character_dict in characters_response["data"]["characters"]["results"]
     ]
 
 
@@ -40,9 +37,7 @@ async def scrape_single_page(
     client: AsyncClient, url_to_scrape: str, page: int
 ) -> list[Character]:
     characters_response = (
-        await client.post(
-            url_to_scrape, data={"query": GRAPHQL_QUERY.format(page=page)}
-        )
+        await client.post(url_to_scrape, data={"query": GRAPHQL_QUERY % str(page)})
     ).json()
     return parse_characters_response(characters_response)
 
@@ -52,8 +47,10 @@ async def scrape_characters() -> list[Character]:
 
     url_to_scrape = settings.RICK_AND_MORTY_API_CHARACTERS_URL
 
-    characters_response = httpx.get(url_to_scrape).json()
-    num_pages = characters_response["info"]["pages"]
+    characters_response = httpx.post(
+        url_to_scrape, data={"query": GRAPHQL_QUERY % "1"}
+    ).json()
+    num_pages = characters_response["data"]["characters"]["info"]["pages"]
     characters = parse_characters_response(characters_response)
 
     async with httpx.AsyncClient() as client:
